@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.libf.dao.StudentTestMapper" >
+  <resultMap id="BaseResultMap" type="com.libf.model.StudentTest" >
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="scores" property="scores" jdbcType="VARCHAR" />
+    <result column="subname" property="subname" jdbcType="VARCHAR" />
+    <result column="gender" property="gender" jdbcType="VARCHAR" />
+  </resultMap>
+  <insert id="insert" parameterType="com.libf.model.StudentTest" >
+    insert into test (name, scores, subname, 
+      gender)
+    values (#{name,jdbcType=VARCHAR}, #{scores,jdbcType=VARCHAR}, #{subname,jdbcType=VARCHAR}, 
+      #{gender,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.libf.model.StudentTest" >
+    insert into test
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="name != null" >
+        name,
+      </if>
+      <if test="scores != null" >
+        scores,
+      </if>
+      <if test="subname != null" >
+        subname,
+      </if>
+      <if test="gender != null" >
+        gender,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="name != null" >
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="scores != null" >
+        #{scores,jdbcType=VARCHAR},
+      </if>
+      <if test="subname != null" >
+        #{subname,jdbcType=VARCHAR},
+      </if>
+      <if test="gender != null" >
+        #{gender,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+</mapper>

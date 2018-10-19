@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 需要注意不能和其他mapping重名 -->
+<!-- 创建方法：包名.文件名 -->
+<mapper namespace="com.testmybatis.model.mapping.userMapping">
+     <!-- id我们需要找寻的方法 -->
+     <!-- parameterType用户输入的参数类型 -->
+     <!-- resultType查询结果的返回类型 -->
+     <select id="getUser" parameterType="int" resultType="com.testmybatis.model.pojo.Mytalkuser">
+     <!-- sql命令 用来执行数据操作 -->
+         select * from mytalkuser where id=#{id}
+     </select>
+ 
+</mapper>

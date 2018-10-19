@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "mybatis-3-mapper.dtd">
+  
+  <!-- 不能与其他的xml中的命名空间重名 -->
+  <!-- 完整的包名.文件名 -->
+<mapper namespace="firstMapper">
+
+                         <!-- 返回类型 如果是引用类型 必须是 全名(包名.类名) --> 	
+  <select id="selectAll" resultType="com.model.pojo.User">
+    select * from user
+  </select>
+  
+</mapper>

@@ -1,0 +1,72 @@
+1、导入jar包: 放到web-inf  -> lib文件夹   (或    在class_path指定)
+
+2、在src中创建一个conf.xml   <--- 文件名自己起  *** 一定是xml文件
+
+3、在创建好的xml文件中写入
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+     <environments default="development">
+         <environment id="development">
+             <transactionManager type="JDBC" />
+             <!-- 配置数据库连接信息 -->
+             <dataSource type="POOLED">
+
+		<!-- 数据库连接信息 -->
+                 <property name="driver" value="com.mysql.jdbc.Driver" />
+                 <property name="url" value="jdbc:mysql://localhost:3306/test11" />
+                 <property name="username" value="root" />
+                 <property name="password" value="root" />
+
+
+             </dataSource>
+         </environment>
+     </environments>
+
+	<!-- 需要写东西的 -->
+
+</configuration>
+
+4、创建和需要访问表的字段一致的POJO(javaBean) 小写就小写  大写就大写  防止出现莫名错误
+
+5、创建一个包 放 映射的xml文件
+
+6、创建映射xml文件
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 需要注意不能和其他mapping重名 -->
+<!-- 创建方法：包名.文件名 -->
+<mapper namespace="com.date.mapping.userMapping">
+     <!-- id我们需要找寻的方法 -->
+     <!-- parameterType用户输入的参数类型 -->
+     <!-- resultType查询结果的返回类型 -->
+     <select id="getUser" parameterType="int" 
+         resultType="com.test.UserTest">
+     <!-- sql命令 用来执行数据操作 -->
+         select * from test where id=#{id}
+     </select>
+ 
+</mapper>
+
+7、把mapping关联到conf.xml中
+
+8、把<!-- 需要写东西的 -->替换成 
+    <mappers>
+        <mapper resource="com/date/mapping/userMapping.xml"/>
+    </mappers>
+
+9、在使用的java文件中写入
+String conf = "conf.xml";// 引入mybatis配置文件
+// 一下不变
+InputStream is = DataBaseTest.class.getClassLoader().getResourceAsStream(conf);
+SqlSessionFactory sessionFactory = new SqlSessionFactoryBuilder().build(is);
+SqlSession session = sessionFactory.openSession();
+
+// 选择需要的操作
+String statement = "com.date.mapping.userMapping.getUser";
+// 映射操作并执行session
+UserTest user = session.selectOne(statement, 1);
+// 输出结果
+System.out.println(user);
+
+
