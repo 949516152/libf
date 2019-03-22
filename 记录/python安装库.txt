@@ -1,0 +1,5 @@
+pip install pyecharts;
+
+--升级pip install 安装
+python -m pip install --upgrade pip 
+

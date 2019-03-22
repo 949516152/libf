@@ -1,0 +1,5 @@
+首先进入虚拟机，开启终端：
+	执行 wgethttps://dev.mysql.com/get/mysql80-community-release-el7-1.noarch.rpm
+	再输入指令： 输入指令：sudo rpm -ivh mysql80-community-release-el7-1.noarch.rpm
+	安装mysql 执行 ：sudo yum install mysql-server
+	

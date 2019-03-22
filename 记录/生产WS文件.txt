@@ -1,0 +1,7 @@
+ <!-- 生成客户端 wsimport -s 要生成的文件路径 -p 完整的包名 -keep weservice的发布地址?wsdl -->
+ 
+wsimport -s H:\\IdeaProjects\\WebServiceDemon\\src\\main\\java  -p com.libf.ws.weather -keep http://www.webxml.com.cn/WebServices/WeatherWebService.asmx?wsdl
+
+
+
+-javaagent:F:\IntelliJ IDEA 2018.2.4\bin\JetbrainsCrack-2.10-release-enc.jar

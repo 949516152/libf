@@ -1,0 +1,19 @@
+29.字符串处理
+···1.String	类型对象中的字符串是不可修改的，是指创建了String实例后不能修改String实例的内容；
+		但在任何时候都可以修改String引用变量使其指向其他String对象。
+		
+	Unicode代码点？
+	2.equals()比较String对象中的字符，而“==”比较的是对象的引用。
+			compareTo()比较字符串大小
+	
+	3.字符串为 null 时，会报空指针异常；
+	
+	4.StringBuffer是线程安全的，同步的；而StringBuilder是线程不安全的，线程不同步。
+		两者都是可修改字符串；
+		StringBuffer的默认构造函数预留16个字符的空间，length()获取当前长度， capacity()获取当前已分配的容量；
+								ensureCapacity()预先设置缓存区的大小；
+								setLength(),append();insert();
+								reversr()反转字符串
+								delete()与deleteChartAt();
+								substring()截取字符串。
+			相关方法

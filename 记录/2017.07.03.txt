@@ -1,0 +1,112 @@
+1.nvl函数 不可以放在where子句的第一个位置，否则无法判断
+
+2.instr函数必要时要在参数和字段前后各加逗号，以区分所检测字符串的起始或长度；
+
+3.同字段不同类型数据查询：
+    select fundname, kinghandcode, accttype, acctcode,
+       decode(stationtype, 'S01', username) main_acct,
+       decode(stationtype, 'S02', username) help_acct,
+       startdate, enddate,  username,  t.status
+  from koss_fundaccount t
+  join koss_fundinfo f
+    on t.fundcode = f.fundcode
+  join koss_fundinfoext x
+    on x.fundcode = f.fundcode
+  join kd_userid d
+    on d.userid = t.acctcode
+    where accttype = 'A002';
+
+4.匹配数字包含数字小数的正则表达式
+ var patrn = /^\d+(\.\d+) $/;
+            var result = true;
+            $("input[type=text]").each(function () {
+                if (!patrn.exec(this.value)) {
+                    alert("请输入正确的数字！");
+                    result = false;
+                }
+            })
+
+			
+5.listagg()函数,必须先要分组使用group by或使用over（partition by XXX ）函数
+ listagg(xxx,         xxx)     within group (order by   yyy) [over(partition by XXX)]     ...  group by  
+		合并的参数，分割参数，                  分类参数              
+
+	例如： select name，listagg(phone,',') within group (order by name) name from names group by name;
+	
+select regexp_substr(',abc,def,gkk', '[^,]+', 1, level)
+from dual
+connect by level <= regexp_count(',abc,def,gkk', ',')    此函数与listagg()函数相反，但只针对单行数据行转列
+	
+
+6.   Number.toFixed(number)    JS中将数字保留n小数，必须为小数，number为保留的位数
+
+7.数据库   集合运算   使用集合运算时，列数和列的类型必须匹配，列名可以不同。
+
+ INTERSECT(交集)，返回两个查询共有的记录。
+ UNION ALL(并集)，返回各个查询的所有记录，包括重复记录。
+ UNION(并集)，返回各个查询的所有记录，不包括重复记录。
+ MINUS(补集)，返回第一个查询检索出的记录减去第二个查询检索出的记录之后剩
+余的记录。
+
+
+8.在oracle中怎样将一列数据转换成一行,分隔的字符串
+--待转换的列表 begin
+with tt as
+ (select subitemname as val
+    from sys_dictvalue
+   where dictitem = 90000
+   order by subitem)
+--待转换的列表 end
+select LTRIM(text, ',') TEXT --去掉最左边的逗号
+  from (select LEVEL lvl, SYS_CONNECT_BY_PATH(val, ',') text, val --逐行遍历按CONNECT BY的条件连接
+          from (SELECT val, ROW_NUMBER() OVER(PARTITION BY 1 ORDER BY 1) x --生成一个树形结构，val为值，x为节点号
+                  FROM tt) a
+        CONNECT BY x - 1 = PRIOR x
+         order by lvl desc, x desc) --降序将最完整的串排在最前面
+ where rownum = 1;	
+
+
+9.row_number() over(partition by XXX order by YYY)在SQL中，该函数用于分组并排序
+	row_number()over()用于数据库的排序功能
+	在使用该函数时，over()里的分组及排序功能的功能晚于执行where, group by, order by，
+	partition by XXX 用于给结果集分组，如果没有指定则将整个结果集看做一个组，它与聚合函数的不同之处在与它能够返回一个组中的多条记录，
+	而聚合函数一般只有一个反映统计值的记录。
+	order by YYY
+	用于给每组的数据进行排序，默认为升序；desc 为降序。
+	
+10.rank()over() 跳跃排序。譬如排名时，当有两个及多个相同名次会只展示一个，跳过其余相同的
+	该排序方式为跳跃排序，当出现相同排名时，展示效果如下：1  1  3  4  4  5...
+	
+	同样over()可添加 partition by 与over by ;
+	
+11.dense_rank()over() 连续排序排名时，有两个第二名仍然跟着第三名。
+	该方式排序为连续排序，当出现相同排名时，会进行连续排名，如分数相同依旧会：1  2  3  4  5...
+	与row_number()不同之处，该函数可能会产生重复值。
+	
+	
+	
+12.在开发过程中对数据进行开发前先确定以什么数据为主键进行删改的？？？？？？
+
+
+
+merge into应用：实现 无则insert插入,有则update更新，一条语句直接进行insert/update操作
+
+merge ino语法：
+
+   MERGE INTO table1 alias1 
+         USING (table2|view2|sub_query2) alias2
+         ON (join condition) 
+     WHEN MATCHED THEN 
+         UPDATE table1 
+               SET col1 = col_val1, 
+                     col2  = col2_val 
+     WHEN NOT MATCHED THEN 
+               INSERT (column_list) VALUES (column_values); 
+			   
+			   
+13.in 和 exists 语法：
+	in把外表和内表做hash连接，而exists是对外表做loop循环；
+		如果查询两个表大小相当，那么用in和exists差别不大，如果两表大小不同，子查询表大使用exists，子查询表小使用in；
+	
+	not in 和not exists：
+		尽量不要使用not in，尽量使用 not exists 

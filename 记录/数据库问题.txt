@@ -1,0 +1,30 @@
+ 数据库之间的创建DATABASELINK连接：
+ 
+ 及通过dblink完成插入、修改、删除等操作：
+ 
+ 1，首先查询连接授权
+ -- 查看wangyong用户是否具备创建database link 权限
+select * from user_sys_privs where privilege like upper('%DATABASE LINK%') AND USERNAME='用户名';
+
+如果查询当前用户没有权限则需要赋权
+
+-- 给wangyong用户授予创建dblink的权限
+grant create public database link to wangyong;
+
+创建DATABASE LINK 连接
+
+1)可以通过plsql图形化创建
+
+2)可以通过语句创建连接
+
+-- 注意一点，如果密码是数字开头，用“”括起来
+							dblink 名称         	用户				密码			数据库
+create public database link TESTLINK2 connect to WANGYONG identified by "123456" USING 'ORCL21';
+
+
+
+
+一般在接口类中使用@Param居多，在类方法中使用@RequestParam 默认是必入参，没有参数会报错，也可以手动设置为 required=false；
+
+
+2，select date '2018-01-01' +level-1 sdate ,level from dual connect by level<date '2019-12-31'-date '2018-01-01' +2;

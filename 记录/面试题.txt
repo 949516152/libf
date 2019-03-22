@@ -1,0 +1,481 @@
+集合体系：
+	Collection实现了Iterable接口，集合有Set，List 与 Map；其中Set与list是实现Collection接口的，Map是独立接口。
+	Collection 接口下有Queue接口，SortedSet接口
+	Set下有HashSet，LinkedHashSet，TreeSet
+	List有ArrayList，LinkedList，Vector
+	Map有HashMap，LinkedHashMap,TreeMap，HashTable;
+	List集合：有序可重复
+		ArrayList：底层数据结构是数组，查询快，但增删慢；，非线程安全，效率高；
+		Vector：底层也是数组查询快，增删慢，线程安全的。效率低
+		LinkedList：底层数据结构是链表，查询慢，但增删快，线程不安全，效率高。
+		
+	Set集合：无序不可重复
+		HashSet：底层数据结构是Hash表，无序，唯一；底层依赖hashcode方法和equals方法保证唯一性；
+		LinkedHashSet：底层是链表与Hash表，FIFO插入，唯一；有链表保证有序性，有hash表保证唯一性
+		TreeSet：底层数据结构是红黑树，（唯一，有序）
+				如何排序：通过自然排序或比较器排序；
+					自然排序：需要排序的对象需要实现Comparable接口，重写compareTo方法
+					比较器排序：单独建立一个比较器接口继承Comparator重写compare方法。
+				保证唯一性：通过比较返回的值是否为0；
+				
+	Map：主要有TreeMap，HashMap，HashTable
+		TreeMap是有序的，HashMap与HashTable是无序的，
+		HashTable是线程安全的，HashMap与TreeMap是非线程安全的
+		
+		相比较 HashMap是相对效率较高，而HashTable效率较低，如果没有特殊要求，一般使用HashMap，
+		HashMap中允许有null键与null值，HashTable中不允许有null值。
+		
+		HashMap中允许有null键与null值，不保证映射顺序，也不保证顺序恒久不变。
+		根据上面 put 方法的源代码可以看出，当程序试图将一个key-value对放入HashMap中时，程序首先根据该 key的 hashCode() 返回值决定该 Entry 的存储位置：
+		如果两个 Entry 的 key 的 hashCode() 返回值相同，那它们的存储位置相同。如果这两个 Entry 的 key 通过 equals 比较返回 true，
+		新添加 Entry 的 value 将覆盖集合中原有 Entry的 value，但key不会覆盖。如果这两个 Entry 的 key 通过 equals 比较返回 false，
+		新添加的 Entry 将与集合中原有 Entry 形成 Entry 链，而且新添加的 Entry 位于 Entry 链的头部——具体说明继续看 addEntry() 方法的说明。
+		
+		简单归纳就是：HashMap在底层就key-value 当做一个整体来看，就是Entry对象，HashMap底层采用一个Node[]数组保存所有的key-value键值对，
+						当需要存储一个Node对象是，会先根据哈希算法决定对象在数组中的位置，根据equals方法决定其在该数组位置上的链表中的存储位置，
+						取出数据时，会先根据hash算法找到数组的位置，再根据equals方法从该位置中查找Node对象。
+		ConcurrentHashMap :使用了锁分段技术
+			ConcurrentHashMap所使用的锁分段技术，首先将数据分成一段一段的存储，然后给每一段数据配一把锁，
+						当一个线程占用锁访问其中一个段数据的时候，其他段的数据也能被其他线程访问
+		
+		
+	哈希表：在哈希表中进行增删查性能比较高，不考虑哈希冲突的情况下，仅需定位一次就可以找到，时间复杂度为O(1)；
+			数据结构的物理存储结构只有两种：顺序存储结构与链式存储结构。
+			在数组中根据给定下标查找，一次定位就可以达到，哈希表的主干就是数组。
+			存储位置=f(关键字)；该函数称为哈希函数。
+			哈希冲突就是当两个或多个元素进行哈希运算得到是同一个存储地址，就是哈希冲突/哈希碰撞。
+				如何解决哈希冲突？
+					开放地址法：发生冲突继续寻找下一块未被使用的存储地址
+					散列函数法：
+					链地址法
+		HashMap采用的是链地址法，即数组+链表的方式。
+
+1.java 集合 ArrayList与LinkedList区别：
+	ArrayList是基于动态数组实现的，LinkedList是一种链表结构；
+	当随机访问时ArrayList效率更高；
+	当增删时，LinkedList效率更高。
+	
+	1.对ArrayList和LinkedList而言，在列表末尾增加一个元素所花的开销都是固定的。对 ArrayList而言，主要是在内部数组中增加一项，
+		指向所添加的元素，偶尔可能会导致对数组重新进行分配；而对LinkedList而言，这个开销是 统一的，分配一个内部Entry对象。
+	2.在ArrayList集合中添加或者删除一个元素时，当前的列表所所有的元素都会被移动。而LinkedList集合中添加或者删除一个元素的开销是固定的。
+	3.LinkedList集合不支持 高效的随机随机访问（RandomAccess），因为可能产生二次项的行为。
+	4.ArrayList的空间浪费主要体现在在list列表的结尾预留一定的容量空间，而LinkedList的空间花费则体现在它的每一个元素都需要消耗相当的空间
+
+
+2.java  hashmap与HashTable的区别：
+	HashMap是 实现了Map接口，是线程不安全的，无序的，数组+链表，以Hashmap以key-value键值对的方式存储数据，首先通过put方式，hashmap会首先通过运算key的hash值，
+				找出数据的存储位置，当如果key值的哈希值相同时再根据equals方法判断数据在链表中的存储位置。
+			HashMap 1.7与1.8 1.7使用的是头插法，使用的是单链表，容易出现逆序和环形链表死循环问题，1.8加入了红黑树使用尾插法，能够避免出现逆序和环形链表死循环。
+	HashTable：也实现了Map接口，是线程安全的，存储方式和HashMap类似
+				
+
+3.集合中有哪些是线程安全的？
+	Vector 与HashTable
+
+4.线程是怎么创建的？
+	线程的创建有两种方式 继承Thread类，和实现Runnable接口
+	我们还可以实现Callable和FutureTask的方式创建线程
+	
+5.webservice服务：
+webService是一种跨语言跨平台的远程调用技术，
+	ws有三大组件 SOAP，WSDL与UDDI
+	SOAP：简单对象访问协议
+	WSDL：webservice服务描述语言
+	UDDI通用描述，发现与整合
+	
+	创建webService服务的四种方式：
+		1.通过CXF方式实现
+			能很好与项目进行整合，开发方便。
+			支持其他语言，仅支持了SOA架构的一部分。
+		2.通过Xfire方式实现
+			不支持java之外的语言
+		3.通过Axis方式
+		4.通过Axis2方式实现
+			对java之外的语言也提供相关生成代码，但该框架依赖的包数量很大，打包部署麻烦，不能很好和项目整合
+	
+
+6.线程池体系：
+	线程池的顶级接口是Executor
+	Executor 是线程池的顶级接口，只要一个execute方法；
+	ExecutorService 是继承了Executor接口的实现的接口，提供对该接口的服务；
+	AbstractExecutorService：执行框架抽象类
+	ScheduledExecutorService:定时调度接口
+	ThreadPoolExecutor：线程池的具体实现
+	Executors：线程池工厂类
+	
+
+7.线程池：
+	线程池是为了尽可能减少频繁创建和销毁线程的次数，避免内存资源的过度消耗，尽量利用已有对象进行服务。
+	
+	线程池的三种策略：
+		直接提交
+		有界队列
+		无界队列
+	
+	线程池的缓存队列：用于存放等待执行的任务，类型为BlockingQueue<Runnable>,通常有以下三种类型：
+		ArrayBlockingQueue：基于数组的先进先出队列FIFO，此队列创建时必须指定缓存队列的大小；
+		LinkedBlockingQueue：基于链表的先进先出队列，如果创建时没有指定容量大小，则默认是Integer.MAX_VALUE;
+		synchronouQueue:此队列不会保存提交的任务，而是创建新的线程执行新任务。
+		
+		
+	四种拒绝策略:
+		CallerRunsPolicy:由调用线程处理任务
+		AbortPolicy:抛出异常，丢弃任务（默认）
+		DicardPolicy:丢弃任务，但不抛出异常
+		DiscardOldestPolicy:丢弃最先执行任务执行程序
+
+创建线程池的四种方式：
+	通过Executors线程池工具类创建线程池
+	newCachedThreadPool：缓存线程池
+	newFixedThreadPool：固定数量线程池
+	newScheduledThreadPool：定时调度线程池
+	newSingleThreadPool：单一线程池
+
+ForkJoinPool：是一种特殊的线程池，可以将一个任务拆分成多个小任务执行，
+	它使用了一个无限队列来保存需要执行的任务，而线程的数量则是通过构造函数传入，
+		如果没有向构造函数中传入希望的线程数量，那么当前计算机可用的CPU数量会被设置为线程数量作为默认值。
+	该线程池主要使用分治法处理线程，
+	
+8.java中钱用的是什么类型？
+	float和double一般只用于科学计算或工程计算
+	在进行商业价格处理时，一般使用BigDecimal数据类型；
+	
+		java开发中在对钱数计算时使用BigDecimal数据类型
+		
+		对于 float 与double数据类型进行四则运算时，可能会产生误差，因此，对小数或金钱价格的四则运算，需要使用BigDecimal数据类型；
+			在使用BigDecimal数据类型慎用BigDecimal数据类型的入参为double的构造函数，在计算或在数据库JDBC可能产生误差错误。
+			
+			使用基于整数或String的构造函数。
+	BigDecimal中有三个构造参数：一个以双精度浮点型数作为输入，另一个以整数和换算因子作为输入，还有以String作为输入的；
+		对于以double作为入参的构造参数可能会在计算过程中造成误差，还可能对JDBC驱动造成异常，
+		可以考虑使用以整数入参或以String入参的构造函数。
+
+	
+	
+	
+
+========================================================================================================
+
+1.spring注解有哪些？
+	@Service，@Controller，@Component，@Repository，@RequestBody，@ResponseBody，@RequestParam，@Param，@Transactional,@AutoWired,@Resource,@Qualifier,
+	包括AOP的AspectJ，@PointCut，@Before，@After，@Around，@AfterThrowing,@AfterReturning
+
+2.Spring IOC是什么？
+	IOC是依赖注入：传统的创建对象方式是通过程序手动创建对象，对象之间的耦合性较高，
+		spring IOC方式是通过spring容器创建对象，不需要手动创建对象
+		
+
+3.缓存 ，一二级缓存：、
+	缓存是将从数据库中查询的数据放入到缓存中，下次使用时从缓存中取出数据而不是从数据库查询，避免频繁操作数据库，减轻数据库压力，提高系统性能。
+
+	在mybatis中的缓存：
+	一级缓存是SQLSession级别的缓存，在操作数据库时需要创建SQLSession对象，在对象中有一个数据结构用于存放缓存数据，不同的SQLSession之间的缓存互不影响。
+		用户查询数据时，先到SQLSession缓存中查找，是否有数据，如果有则读取。没有则去查询数据库，并将查询结果放入缓存中。
+		一级缓存，在操作数据库时需要创建一个SQLSession对象，SQLSession中有一个Executor对象，Executor对象中持有一个PerpetualCache对象操作缓存，
+			当数据库会话结束时SQLSession对象及其内部的Executor和PerpetualCache对象一并释放。
+		SQLSession执行commit时，会清空缓存，避免出现脏读。
+		
+		a、MyBatis在开启一个数据库会话时，会 创建一个新的SqlSession对象，SqlSession对象中会有一个新的Executor对象。
+			Executor对象中持有一个新的PerpetualCache对象；当会话结束时，SqlSession对象及其内部的Executor对象还有PerpetualCache对象也一并释放掉。
+
+	　　b、如果SqlSession调用了close()方法，会释放掉一级缓存PerpetualCache对象，一级缓存将不可用。
+
+	　　c、如果SqlSession调用了clearCache()，会清空PerpetualCache对象中的数据，但是该对象仍可使用。
+
+	　　d、SqlSession中执行了任何一个update操作(update()、delete()、insert()) ，都会清空PerpetualCache对象的数据，但是该对象可以继续使用
+	
+	
+		MyBatis与Spring整合时，Mybatis的一级缓存会失效，是因为Mybatis的一级缓存是存在于SQLSession级别的，关闭SQLSession就会清空缓存；
+			Spring对Mybatis的SQLSession是通过template控制的，SQLSession又被Spring当做resource放入当前线程的上下文（threadlocal）中，
+			spring通过mybatis调用数据库的过程
+				首先，请求访问数据库；
+				spring会向mybatis申请SQLSession，并将SQLSession绑定到当前线程，放入到threadlocal中；
+				template从threadlocal中取出SQLSession，执行查询；
+				查询结束，清空threadlocal中与当前线程绑定的SQLSession，释放资源；
+				再次需要访问数据，重新步骤。
+				每次的SQLSession是不同的所以感觉SQLSession是失效的。
+	
+	有了一级缓存为什么又有二级缓存？
+	二级缓存是mapper/Application级别的缓存，多个SQLSession去操作同一个mapper的SQL语句，多个SQLSession可以共用一个二级缓存，
+		二级缓存是跨SQLSession的，二级缓存的作用范围更大。
+		二级缓存是默认关闭的，开启二级缓存需要进行配置，Mybatis要求返回的POJO必须是可序列化的，即要求实现Serializable接口，
+			并在需要开启二级缓存的配置xml文件中使用<cache/>标签。
+			cache标签有多个属性，flushInterval属性，eviction属性，readOnly属性，type属性，size属性
+		每一个namespace的mapper都是一个二级缓存，两个namespace相同则两个mapper执行SQL查询的数据缓存到相同的二级缓存中。
+		
+		在实际开发中，Mybatis通常与Spring整合开发，Spring将事务放到Service中管理，对于每一个service中的SQLSession是不一样的，
+		这是通过mybatis-spring中的org.mybatis.spring.mapper.MapperScannerConfigurer创建sqlsession自动注入到service中的，
+		每一个查询之后都要进行关闭SQLSession，关闭之后数据就会被清空spring整合之后，如果没有事务，一级缓存是没有意义的。
+		
+		
+	开启二级缓存：
+		1.打开总开关：
+			在mybatis配置文件中加入<setting name="cacheEnable" value="true" />
+		2.在需要开启二级缓存的mapper.xml中开启二级缓存，加入<cache/>标签
+		3.让使用二级缓存的POJO类必须实现Serializable接口。
+		
+		
+	MyBatis自带的二级缓存是单服务器工作，无法实现分布式缓存。
+	
+	分布式缓存部署：
+		ehcache：
+		首先部署依赖jar包
+			<!--整合ehcache第三方 耳机缓存-->
+			<dependency>
+				<groupId>net.sf.ehcache</groupId>
+				<artifactId>ehcache-core</artifactId>
+				<!--2.5之后的版本都是单例模式-->
+				<version>2.4.8</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.mybatis.caches</groupId>
+				<artifactId>mybatis-ehcache</artifactId>
+				<version>1.0.2</version>
+			</dependency>
+		然后配置ehcache.xml 配置文件：	
+			<?xml version="1.0" encoding="UTF-8" ?>
+			<ehcache xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+					 xsi:noNamespaceSchemaLocation="http://ehcache.org/ehcache.xsd"
+						updateCheck="false" monitoring="autodetect" dynamicConfig="true">
+
+				<diskStore path="F:\develop\ehcache"/>
+
+				<!--
+			   Mandatory Default Cache configuration. These settings will be applied to caches
+			   created programmtically using CacheManager.add(String cacheName)
+			   -->
+				<!--
+				   name:缓存名称。
+				   maxElementsInMemory：缓存最大个数。
+				   eternal:对象是否永久有效，一但设置了，timeout将不起作用。
+				   timeToIdleSeconds：设置对象在失效前的允许闲置时间（单位：秒）。仅当eternal=false对象不是永久有效时使用，可选属性，默认值是0，也就是可闲置时间无穷大。
+				   timeToLiveSeconds：设置对象在失效前允许存活时间（单位：秒）。最大时间介于创建时间和失效时间之间。仅当eternal=false对象不是永久有效时使用，默认是0.，也就是对象存活时间无穷大。
+				   overflowToDisk：当内存中对象数量达到maxElementsInMemory时，Ehcache将会对象写到磁盘中。
+				   diskSpoolBufferSizeMB：这个参数设置DiskStore（磁盘缓存）的缓存区大小。默认是30MB。每个Cache都应该有自己的一个缓冲区。
+				   maxElementsOnDisk：硬盘最大缓存个数。
+				   diskPersistent：是否缓存虚拟机重启期数据 Whether the disk store persists between restarts of the Virtual Machine. The default value is false.
+				   diskExpiryThreadIntervalSeconds：磁盘失效线程运行时间间隔，默认是120秒。
+				   memoryStoreEvictionPolicy：当达到maxElementsInMemory限制时，Ehcache将会根据指定的策略去清理内存。默认策略是LRU（最近最少使用）。你可以设置为FIFO（先进先出）或是LFU（较少使用）。
+				   clearOnFlush：内存数量最大时是否清除。
+				-->
+				<defaultCache
+						maxElementsInMemory="10"
+						eternal="false"
+						timeToIdleSeconds="120"
+						timeToLiveSeconds="120"
+						overflowToDisk="true"
+						maxElementsOnDisk="10000000"
+						diskPersistent="false"
+						diskExpiryThreadIntervalSeconds="120"
+						memoryStoreEvictionPolicy="LRU"
+				/>
+				<!-- 也可以通过name设置针对某个类的缓存配置
+				<cache name="cn.sz.po.Emp"
+					maxElementsInMemory="1000"
+					eternal="true"
+					timeToIdleSeconds="0"
+					timeToLiveSeconds="0"
+					overflowToDisk="false"
+					/>-->
+			</ehcache>
+			
+		再打开二级缓存，在<cache />标签的type属性填写org.mybatis.caches.ehcache.EhcacheCache类，
+			需要日志则使用org.mybatis.caches.ehcache.EhcacheCache
+			
+			如果与spring集成，除了需要完成上面的三步以外，还需要在spring的配置文件里面加上一段配置：
+					<bean id="manager" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">
+					<property name="configLocation" value="classpath:ehcache.xml"></property>
+					</bean>
+
+					最后，这个mapper.xml里面的操作是全局，默认为useCache="true"  都会有作用，
+					假如某个业务是不要缓存的，可以在当前业务下加上useCache="false"
+					
+		1.只能在【只有单表操作】的表上使用缓存
+
+			不只是要保证这个表在整个系统中只有单表操作，而且和该表有关的全部操作必须全部在一个namespace下。多表操作一定不能使用缓存
+
+		2. 在可以保证查询远远大于insert,update,delete操作的情况下使用缓存
+
+			这一点不需要多说，所有人都应该清楚。记住，这一点需要保证在1的前提下才可
+			
+		二级缓存只能在只有单表操作的表上执行，在多表操作上开启二级缓存可能造成脏读数据。
+
+4.消息中间件有哪些？及其原理：
+
+5.Spring AOP:
+	AOP的通知：前置通知，环绕通知，异常通知，后置通知，最终通知
+	OOP是面向对象编程，是一种计算机编程思想，其核心思想是封装继承多态，实现编程的重用性、灵活性、拓展性。
+	Spring AOP是面向切面编程，是对面向对象编程的一个补充；
+			面向切面编程是一种通过预编译与运行期动态代理实现在不修改源码的情况下，给程序动态添加功能的一种技术。
+
+
+6.事务
+	编程式事务
+	声明式事务
+
+7.前后端交互的方式：
+
+8.Ajax的属性有哪些？
+	Ajax属于异步传输，
+	相关属性有大概二十多个：
+		URL：路径
+		type：方式有post与get方式
+		data：向服务器传输的数据
+		dataType：服务器返回的数据类型
+		async：是否异步
+		success：调用成功的回调函数
+		error：调用失败的回调函数
+		contentType：发送信息至服务器时内容编码类型
+		timeout：超时时间
+
+9.SpringBoot，redis：
+
+10.日志：
+
+11.JVM构成：
+	
+
+
+1.Oracle的存储过程？
+
+2.Oracle的函数？
+
+3.MySQL优化，explain 方式优化的相关字段：
+	1.MySQL数据库的优化机制：可以使用explain select方式查看相关优化方式：
+		通过explain 查询出 id，type，select_type，table，possible_key，key，key_len等相关字段，其中重要的是使用type字段，最高的system，最低的三级是all，index，range
+		数据库优化最少要range级别，最好达到ref级别
+	2.查询避免使用select * 查询方式；
+	3.当已知只有一条结果时使用 limit 1 ，提高查询效率；
+	4.在经常使用的搜索列上添加索引；
+	5.为每张表添加一个ID主键；
+	6.尽可能避免使用not null
+	7.尽量存储较小的字段类型；
+	8.尽量将字符串类型转为整型存储，如IP等
+	。。。
+	
+
+4.数据库的锁机制：
+	MySQL锁机制：
+	  共享锁与排它锁：
+		InnoDB实现了两种标准的行级锁：共享锁 （Shared Lock S锁）和排它锁（exclusive clock X锁）
+		S锁允许持有该锁的事务读取行，X锁允许持有该锁的事务更新或删除锁。 S锁可以共同拥有，S锁与X锁互斥。
+	  意向锁Intension Lock：
+		InnoDB允许行级锁与表级锁共存，意向锁是表级锁；意向锁分为意向共享锁IS锁和意向排它锁IX锁，
+		IS锁表示当前事务意图在当前行上设置共享锁 语句 ：select ... lock in share mode;
+		IX锁表示当前事务意图在当前行上设置排他锁 语句 ；select ... for update ;
+	事务要想获得某个表上的S锁或X锁，首先要获得IS锁或IX锁。
+	
+	MySQL存储引擎使用了三种锁定机制：表级锁，行级锁，页级锁
+		表级锁是数据库中最大颗粒度的锁定机制，实现逻辑简单，带来的负面效应较小，避免死锁问题。但表级锁容易出现资源竞争；
+		行级锁：锁定对象的粒度较小，由于锁定粒度较小，也导致了数据库资源的消耗，会导致死锁；InnoDB
+		页级锁：是在MySQL中的独特的锁，页级锁的颗粒度介于表级锁与行级锁之间，页级锁也容易发生死锁，
+	在数据库实现资源锁定的过程中，随着锁定资源颗粒度减小，锁定相同资源的数据所要消耗的内存数量也就越来越多；
+									随着锁定资源颗粒度的减小，应用程序访问请求遇到锁等待可能性就降低，并发度提升。
+									
+	三种锁的特性：
+		表级锁：开销小，加锁快，不会出现死锁，锁定粒度大，发生锁冲突概率低，并发度低；
+		行级锁：开销大，加锁慢，会出现死锁，锁定粒度小，发生锁冲突的概率较小，并发度较高
+		页级锁：开销和加锁时间介于表级锁与行级锁之间，会出现死锁，并发度一般。
+	适用：表级锁适合于以查询为主，行级锁适合于有大量按索引条件并发更新少量不同数据，有并发查询的表；
+	
+	MyISAM :使用的是表级锁，会在查询语句前自动给所涉及的所有表加读锁，给所有执行更新的操作前加写锁，由引擎自动加锁；
+	
+	InnoDB：使用的是行级锁，InnoDB行锁是通过给索引上的索引项加锁，只有通过索引条件检索，才会使用行锁，否则使用的表锁。
+	
+		在不通过索引条件查询时，InnoDB使用的是表锁
+		MySQL行锁是对索引加的索引，而不是对记录加的锁，访问不同行的记录，但是使用相同的索引键时可能会导致锁冲突；
+		当表有多个索引的时候，不同的事务可以使用不同的索引锁定不同的行，另外，不论是使用主键索引、唯一索引或普通索引，InnoDB都会使用行锁来对数据加锁
+		即便在条件中使用了索引字段，但是否使用索引来检索数据是由MySQL通过判断不同执行计划的代价来决定的，如果MySQL认为全表扫描效率更高，
+			比如对一些很小的表，它就不会使用索引，这种情况下InnoDB将使用表锁，而不是行锁。
+			因此，在分析锁冲突时，别忘了检查SQL的执行计划，以确认是否真正使用了索引。
+			
+	通常来说，死锁都是应用设计的问题，通过调整业务流程、数据库对象设计、事务大小，以及访问数据库的SQL语句，绝大部分死锁都可以避免。
+	下面就通过实例来介绍几种避免死锁的常用方法：
+（1）在应用中，如果不同的程序会并发存取多个表，应尽量约定以相同的顺序来访问表，这样可以大大降低产生死锁的机会。
+（2）在程序以批量方式处理数据的时候，如果事先对数据排序，保证每个线程按固定的顺序来处理记录，也可以大大降低出现死锁的可能。
+（3）在事务中，如果要更新记录，应该直接申请足够级别的锁，即排他锁，而不应先申请共享锁，更新时再申请排他锁，因为当用户申请排他锁时，
+		其他事务可能又已经获得了相同记录的共享锁，从而造成锁冲突，甚至死锁。
+（4）在REPEATABLE-READ隔离级别下，如果两个线程同时对相同条件记录用SELECT...FOR UPDATE加排他锁，在没有符合该条件记录情况下，两个线程都会加锁成功。
+		程序发现记录尚不存在，就试图插入一条新记录，如果两个线程都这么做，就会出现死锁。这种情况下，将隔离级别改成READ COMMITTED，就可避免问题。
+（5）当隔离级别为READ COMMITTED时，如果两个线程都先执行SELECT...FOR UPDATE，判断是否存在符合条件的记录，如果没有，就插入记录。
+		此时，只有一个线程能插入成功，另一个线程会出现锁等待，当第1个线程提交后，第2个线程会因主键重出错，但虽然这个线程出错了，却会获得一个排他锁。
+		这时如果有第3个线程又来申请排他锁，也会出现死锁。对于这种情况，可以直接做插入操作，然后再捕获主键重异常，或者在遇到主键重错误时，
+		总是执行ROLLBACK释放获得的排他锁。
+		
+	5.什么时候使用表锁
+		对于InnoDB表，在绝大部分情况下都应该使用行级锁，因为事务和行锁往往是我们之所以选择InnoDB表的理由。但在个别特殊事务中，也可以考虑使用表级锁：
+（1）事务需要更新大部分或全部数据，表又比较大，如果使用默认的行锁，不仅这个事务执行效率低，而且可能造成其他事务长时间锁等待和锁冲突，
+		这种情况下可以考虑使用表锁来提高该事务的执行速度。
+（2）事务涉及多个表，比较复杂，很可能引起死锁，造成大量事务回滚。这种情况也可以考虑一次性锁定事务涉及的表，从而避免死锁、减少数据库因事务回滚带来的开销。
+	当然，应用中这两种事务不能太多，否则，就应该考虑使用MyISAM表了。
+	
+	在InnoDB下，使用表锁要注意以下两点。
+（1）使用LOCK TABLES虽然可以给InnoDB加表级锁，但必须说明的是，表锁不是由InnoDB存储引擎层管理的，而是由其上一层──MySQL Server负责的，
+		仅当autocommit=0、InnoDB_table_locks=1（默认设置）时，InnoDB层才能知道MySQL加的表锁，MySQL Server也才能感知InnoDB加的行锁，这种情况下，I
+		nnoDB才能自动识别涉及表级锁的死锁，否则，InnoDB将无法自动检测并处理这种死锁。
+（2）在用 LOCK TABLES对InnoDB表加锁时要注意，要将AUTOCOMMIT设为0，否则MySQL不会给表加锁；事务结束前，不要用UNLOCK TABLES释放表锁，
+		因为UNLOCK TABLES会隐含地提交事务；COMMIT或ROLLBACK并不能释放用LOCK TABLES加的表级锁，必须用UNLOCK TABLES释放表锁。
+		
+		
+
+5.索引：
+	索引是对数据库中一列或多列进行排序的一种结构。
+	索引的优缺点：
+		优点：索引可以优化数据库查询，提高数据库查询效率；也可以加速表之间的连接。
+		缺点：为数据库增加索引会增加数据库容量，创建和维护索引也需要一定的时间，由于更新数据库时可能也需要更新索引会降低数据库的使用效率。
+	
+	索引分为 唯一索引和复合索引：
+		唯一索引保证唯一性，但允许有null值，且可以由多个null值，如果想要保证唯一性且无null值，需要使用主键或唯一性约束；
+		复合索引：是在数据库两列或两列以上创建的索引，最多可以把16 列创建复合索引，不能跨表创建复合索引，
+					复合索引中列的排列顺序是非常重要的，查询语句中where子句中的查询必须参考复合索引的第一列。
+					当数据库有多个关键列创建复合索引是必要的，尽可能减少创建索引的数量。
+
+6.mybatis分页技术
+	MySQL的分页使用limit关键字：
+		select id from table limit  length;
+		select id from table limit  row_begin  length;
+	
+	当一个查询的语句的偏移量比较大时，最好不要直接使用limit分页，而是先获取到offser的id后再直接使用 limit size 方式；
+			另外一种方式就是通过join的方式
+
+7.数据库的事务的四大特性：ACID
+	原子性，一致性，隔离性，持久性
+事务的四种隔离级别：
+	Serializable 串行化：可避免脏读、不可重复读、幻读
+	Repeatable read : 可重复读：可避免脏读、不可重复读
+	Read Committed: 读已提交,可避免脏读
+	Read uncommitted：读未提交 最低级别任何情况都无法保证
+		MySQL支持四种隔离级别，默认的是Repeatable Read；Oracle支持串行化和读已提交，默认的是读已提交
+
+事务的七种传播级别：
+	Required：有事务则在事务中执行，没有事务则新建事务执行；
+	SUPPORTED：有事务在事务中执行，没有事务则在非事务中执行；
+	REQUIRES_NEW:有事务则挂起当前事务，新建事务执行；没有事务则新建事务执行；
+	NOT_SUPPORTED：在非事务中执行，有事务则挂起当前事务；
+	MANDATORY:有事务则在事务中执行，没有事务则报异常；
+	NEVER：以非事务中型，有事务则异常；
+	NESTED：有事务则挂起当前事务，新建嵌套事务执行，如果没有事务则新建事务
+	
+8.mysql的引擎：
+	常用引擎：MYISAM，innodb引擎
+		MyISAM引擎不支持事务，不支持外键，需要经常清理空间，备份数据。是非聚集索引，支持全文索引，搜索效率比InnoDB高，有表锁。
+		InnoDB 引擎 支持事务，支持外键，是非聚集索引；不支持全文索引，没有保存数据的行数，有行锁
+		
+9.避免出现死锁：
+		1）以固定的顺序访问表和行。即按顺序申请锁，这样就不会造成互相等待的场面。
+
+		2）大事务拆小。大事务更倾向于死锁，如果业务允许，将大事务拆小。
+
+		3）在同一个事务中，尽可能做到一次锁定所需要的所有资源，减少死锁概率。
+
+		4）降低隔离级别。如果业务允许，将隔离级别调低也是较好的选择，比如将隔离级别从RR调整为RC，可以避免掉很多因为gap锁造成的死锁。
+
+		5）为表添加合理的索引。如果不走索引将会为表的每一行记录添加上锁，死锁的概率大大增大。
+		
+10.MySQL的小数存储类型？
+	在MySQL使用浮点数类型和定点数类型表示小数，
+		浮点数类型包括单精度数据类型float和双精度数据类型double，定点数类型是decimal；
+	在MySQL中，定点数以字符串形式存储，因此，其精度比浮点数要高，而且浮点数会出现误差，
+		这是浮点数一直存在的缺陷。如果要对数据的精度要求比较高，还是选择定点数decimal比较安全
+	在MySQL中，定点数是以字符串形式存储的，精度别浮点数要高，而且浮点数容易出现误差，如果多数据的精度要求比较高时，推荐选择decimal数据类型。
