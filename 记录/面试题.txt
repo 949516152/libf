@@ -146,11 +146,16 @@ ForkJoinPool：是一种特殊的线程池，可以将一个任务拆分成多�
 			在使用BigDecimal数据类型慎用BigDecimal数据类型的入参为double的构造函数，在计算或在数据库JDBC可能产生误差错误。
 			
 			使用基于整数或String的构造函数。
+			
 	BigDecimal中有三个构造参数：一个以双精度浮点型数作为输入，另一个以整数和换算因子作为输入，还有以String作为输入的；
 		对于以double作为入参的构造参数可能会在计算过程中造成误差，还可能对JDBC驱动造成异常，
 		可以考虑使用以整数入参或以String入参的构造函数。
 
+
+9.定时调度框架Quartz：
 	
+
+10.NodeJS
 	
 	
 
@@ -330,6 +335,7 @@ ForkJoinPool：是一种特殊的线程池，可以将一个任务拆分成多�
 		timeout：超时时间
 
 9.SpringBoot，redis：
+	redis数据类型：String、hash、list、set、zset；
 
 10.日志：
 
@@ -338,8 +344,27 @@ ForkJoinPool：是一种特殊的线程池，可以将一个任务拆分成多�
 
 
 1.Oracle的存储过程？
+	create [or replace ] procedure procedure_name [(param...)]
+		is 
+			[declatation_section]
+		begin
+			executable_section
+		EXCEPTION
+			exception_section]
+
+	END [procedure_name];
+
+调用存储函数：exec procedure_name [(param...)];
 
 2.Oracle的函数？
+	Substr：截取字符串；
+	distinct：去重函数
+[row_number()| rank()|dense_rank()] over (partition by col_name1 order by col_name2)
+	row_number:连续且递增
+	rank:跳跃排序，有相同数据则相同排名 如 12225
+	dense_rank:有相同数据则排名相同，然后递增，
+	listagg(col_name, delimiter) whitgin group (order by col_name1) over(partition by col_name2) 将结果拼接;
+		
 
 3.MySQL优化，explain 方式优化的相关字段：
 	1.MySQL数据库的优化机制：可以使用explain select方式查看相关优化方式：
@@ -403,7 +428,7 @@ ForkJoinPool：是一种特殊的线程池，可以将一个任务拆分成多�
 		这时如果有第3个线程又来申请排他锁，也会出现死锁。对于这种情况，可以直接做插入操作，然后再捕获主键重异常，或者在遇到主键重错误时，
 		总是执行ROLLBACK释放获得的排他锁。
 		
-	5.什么时候使用表锁
+	什么时候使用表锁
 		对于InnoDB表，在绝大部分情况下都应该使用行级锁，因为事务和行锁往往是我们之所以选择InnoDB表的理由。但在个别特殊事务中，也可以考虑使用表级锁：
 （1）事务需要更新大部分或全部数据，表又比较大，如果使用默认的行锁，不仅这个事务执行效率低，而且可能造成其他事务长时间锁等待和锁冲突，
 		这种情况下可以考虑使用表锁来提高该事务的执行速度。
@@ -454,7 +479,7 @@ ForkJoinPool：是一种特殊的线程池，可以将一个任务拆分成多�
 	REQUIRES_NEW:有事务则挂起当前事务，新建事务执行；没有事务则新建事务执行；
 	NOT_SUPPORTED：在非事务中执行，有事务则挂起当前事务；
 	MANDATORY:有事务则在事务中执行，没有事务则报异常；
-	NEVER：以非事务中型，有事务则异常；
+	NEVER：以非事务中执行，有事务则异常；
 	NESTED：有事务则挂起当前事务，新建嵌套事务执行，如果没有事务则新建事务
 	
 8.mysql的引擎：
