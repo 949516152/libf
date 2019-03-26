@@ -156,6 +156,13 @@ ForkJoinPool：是一种特殊的线程池，可以将一个任务拆分成多�
 	
 
 10.NodeJS
+
+11.异常：
+	Throwable是所有异常的顶级接口，分为Exception与Error，
+	检查性异常需要使用try catch finally关键字在编译期进行处理；
+	java中的所有继承自Exception类的异常都是检查型异常，所有继承自RuntimeException的异常都是非检查型异常，
+
+12.过滤器，监听器，拦截器的区别：
 	
 	
 
@@ -463,6 +470,9 @@ ForkJoinPool：是一种特殊的线程池，可以将一个任务拆分成多�
 	
 	当一个查询的语句的偏移量比较大时，最好不要直接使用limit分页，而是先获取到offser的id后再直接使用 limit size 方式；
 			另外一种方式就是通过join的方式
+			
+			Oracle分页方式是通过在嵌套查询的方式:
+				select * from （select * rownum rn from table_name f where f.rownum < max_size） t where  t.rn < min_value
 
 7.数据库的事务的四大特性：ACID
 	原子性，一致性，隔离性，持久性
