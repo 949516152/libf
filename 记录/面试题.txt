@@ -156,12 +156,23 @@ ForkJoinPool：是一种特殊的线程池，可以将一个任务拆分成多�
 	
 
 10.NodeJS
+
+11.过滤器，监听器，拦截器：
+	答：过滤器：是一种可复用的代码片段，可以用来转换HTTP请求，响应和头信息；他不能产生一种请求或响应，只是能够修改某一资源的请求或响应；
+		监听器：通过listener监听web服务器中执行的某一执行动作，并根据其请求做出相应的响应。
+		interceptor：拦截器，拦截器是对过滤器更加细化的应用；
+		servlet是web应用的中间层
+		
+		servlet，Listener和filter是配置在web容器中的，
 	
 	
 
 ========================================================================================================
 
 1.spring注解有哪些？
+	@RestController:
+	@PathVariable:带占位符的URL是Spring3.0新增的功能，通过该注解可以将URL中占位符参数绑定到控制器处理方法的入参中：
+					URL中的{XXX}占位符可以通过@PathVariable("XXX")绑定到操作方法的入参中；	
 	@Service，@Controller，@Component，@Repository，@RequestBody，@ResponseBody，@RequestParam，@Param，@Transactional,@AutoWired,@Resource,@Qualifier,
 	包括AOP的AspectJ，@PointCut，@Before，@After，@Around，@AfterThrowing,@AfterReturning
 
@@ -170,7 +181,7 @@ ForkJoinPool：是一种特殊的线程池，可以将一个任务拆分成多�
 		spring IOC方式是通过spring容器创建对象，不需要手动创建对象
 		
 
-3.缓存 ，一二级缓存：、
+3.缓存 ，一二级缓存：
 	缓存是将从数据库中查询的数据放入到缓存中，下次使用时从缓存中取出数据而不是从数据库查询，避免频繁操作数据库，减轻数据库压力，提高系统性能。
 
 	在mybatis中的缓存：
