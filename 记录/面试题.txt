@@ -157,6 +157,7 @@ ForkJoinPool：是一种特殊的线程池，可以将一个任务拆分成多�
 
 10.NodeJS
 
+<<<<<<< HEAD
 11.过滤器，监听器，拦截器：
 	答：过滤器：是一种可复用的代码片段，可以用来转换HTTP请求，响应和头信息；他不能产生一种请求或响应，只是能够修改某一资源的请求或响应；
 		监听器：通过listener监听web服务器中执行的某一执行动作，并根据其请求做出相应的响应。
@@ -164,7 +165,27 @@ ForkJoinPool：是一种特殊的线程池，可以将一个任务拆分成多�
 		servlet是web应用的中间层
 		
 		servlet，Listener和filter是配置在web容器中的，
+=======
+11.异常：
+	Throwable是所有异常的顶级接口，分为Exception与Error，
+	检查性异常需要使用try catch finally关键字在编译期进行处理；
+	java中的所有继承自Exception类的异常都是检查型异常，所有继承自RuntimeException的异常都是非检查型异常，
+
+12.过滤器，监听器，拦截器的区别：
+先启动监听器，在启动过滤器，然后是拦截器：	
+
+	监听器和过滤器需要在web.xml中进行配置
 	
+13.如何修改tomcat服务器端口？
+
+14.RestController?
+	该注解相当于Controller与ResponseBody注解的结合。
+
+15.常见异常及异常的处理方法？
+
+16.IO流？
+
+17.调试方法
 	
 
 ========================================================================================================
@@ -484,6 +505,9 @@ ForkJoinPool：是一种特殊的线程池，可以将一个任务拆分成多�
 	
 	当一个查询的语句的偏移量比较大时，最好不要直接使用limit分页，而是先获取到offser的id后再直接使用 limit size 方式；
 			另外一种方式就是通过join的方式
+			
+			Oracle分页方式是通过在嵌套查询的方式:
+				select * from （select * rownum rn from table_name f where f.rownum < max_size） t where  t.rn < min_value
 
 7.数据库的事务的四大特性：ACID
 	原子性，一致性，隔离性，持久性
