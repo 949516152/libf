@@ -352,7 +352,17 @@ ForkJoinPool：是一种特殊的线程池，可以将一个任务拆分成多�
 
 11.JVM构成：
 	
+	
+12.解决静态资源不能访问的情况：
+	1.在web.xml中配置servlet-mapping的default，如：
+		<servlet-mapping>
+			<servlet-name>default</servlet-name>
+			<url-pattern>*.css</url-pattern>
+		</servlet-mapping>
+	2.在配置文件中使用
+		<mvc:default-servlet-handler/>
 
+	3.使用  <mvc:resources location="/img/" mapping="/img/**"/> 类似
 
 1.Oracle的存储过程？
 	create [or replace ] procedure procedure_name [(param...)]
